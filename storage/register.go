@@ -18,6 +18,9 @@ type RegisterBody struct {
 	CommandPort int      `json:"command_port"`
 	Files       []string `json:"files"`
 }
+type RegisterResponseBody struct {
+	Files []string `json:"files"`
+}
 
 func resolveHostIp() string {
 
@@ -64,6 +67,58 @@ func getFilePaths(directory string) ([]string, error) {
 
 	return cleanFilePaths(filePaths), err
 }
+
+func isDirEmpty(path string) (bool, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return false, err
+	}
+	defer f.Close()
+	_, err = f.Readdir(1)
+	if err == nil {
+		return false, nil
+	}
+	if err == os.ErrNotExist {
+		return true, nil
+	}
+	return false, err
+}
+func deleteFiles(directory string, files []string) {
+	for _, file := range files {
+		filePath := filepath.Join(directory, file)
+
+		err := os.Remove(filePath)
+		if err != nil {
+			fmt.Printf("Error removing file %s: %v\n", filePath, err)
+			continue
+		}
+		fmt.Printf("File %s deleted successfully.\n", filePath)
+
+		dirPath := filepath.Dir(filePath)
+		for dirPath != directory {
+
+			isEmpty, err := isDirEmpty(dirPath)
+			if err != nil {
+				fmt.Printf("Error checking directory %s: %v\n", dirPath, err)
+				break
+			}
+
+			if isEmpty {
+				err := os.Remove(dirPath)
+				if err != nil {
+					fmt.Printf("Error removing directory %s: %v\n", dirPath, err)
+					break
+				}
+				fmt.Printf("Directory %s deleted successfully.\n", dirPath)
+			} else {
+
+				break
+			}
+
+			dirPath = filepath.Dir(dirPath)
+		}
+	}
+}
 func Register() {
 
 	filePaths, _ := getFilePaths(Directory)
@@ -92,10 +147,13 @@ func Register() {
 		fmt.Println("Error sending POST request:", err)
 		return
 	}
-	resp.Body.Close()
+	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusOK {
-		//process files here
+		var responseBody RegisterResponseBody
+		json.NewDecoder(resp.Body).Decode(&responseBody)
+		fmt.Println(responseBody.Files)
+		deleteFiles(Directory, responseBody.Files)
 		fmt.Println("Successfully registered.")
 	} else {
 		fmt.Println("Failed to register, status code:", resp.StatusCode)

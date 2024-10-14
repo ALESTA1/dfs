@@ -2,14 +2,12 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"os"
+	"storage/clienthandlers"
+	"storage/config"
 	"time"
 )
-
-var CLIENT_PORT string
-var COMMAND_PORT string
-var REGISTRATION_PORT string
-var Directory string
 
 func startCommandServer() {
 
@@ -18,6 +16,9 @@ func startCommandServer() {
 }
 func startClientServer() {
 
+	http.HandleFunc("/storage_size", clienthandlers.ClientSizeHandler)
+	http.HandleFunc("/storage_read", clienthandlers.ClientReadHandler)
+	http.HandleFunc("/storge_write", clienthandlers.ClientWriteHandler)
 }
 func main() {
 
@@ -26,11 +27,11 @@ func main() {
 		return
 	}
 
-	CLIENT_PORT = os.Args[1]
-	COMMAND_PORT = os.Args[2]
-	REGISTRATION_PORT = os.Args[3]
-	Directory = os.Args[4]
-	os.MkdirAll(Directory, os.ModePerm)
+	config.CLIENT_PORT = os.Args[1]
+	config.COMMAND_PORT = os.Args[2]
+	config.REGISTRATION_PORT = os.Args[3]
+	config.Directory = os.Args[4]
+	os.MkdirAll(config.Directory, os.ModePerm)
 
 	go startCommandServer()
 	go startClientServer()

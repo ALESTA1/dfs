@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"storage/config"
 	"strconv"
 	"strings"
 )
@@ -121,10 +122,10 @@ func deleteFiles(directory string, files []string) {
 }
 func Register() {
 
-	filePaths, _ := getFilePaths(Directory)
+	filePaths, _ := getFilePaths(config.Directory)
 	storageIP := resolveHostIp()
-	clientPort, _ := strconv.Atoi(CLIENT_PORT)
-	commandPort, _ := strconv.Atoi(COMMAND_PORT)
+	clientPort, _ := strconv.Atoi(config.CLIENT_PORT)
+	commandPort, _ := strconv.Atoi(config.COMMAND_PORT)
 
 	fmt.Println(filePaths)
 	fmt.Println(storageIP)
@@ -142,7 +143,7 @@ func Register() {
 		return
 	}
 
-	resp, err := http.Post("http://localhost:"+REGISTRATION_PORT+"/register", "application/json", bytes.NewBuffer(jsonData))
+	resp, err := http.Post("http://localhost:"+config.REGISTRATION_PORT+"/register", "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
 		fmt.Println("Error sending POST request:", err)
 		return
@@ -153,7 +154,7 @@ func Register() {
 		var responseBody RegisterResponseBody
 		json.NewDecoder(resp.Body).Decode(&responseBody)
 		fmt.Println(responseBody.Files)
-		deleteFiles(Directory, responseBody.Files)
+		deleteFiles(config.Directory, responseBody.Files)
 		fmt.Println("Successfully registered.")
 	} else {
 		fmt.Println("Failed to register, status code:", resp.StatusCode)

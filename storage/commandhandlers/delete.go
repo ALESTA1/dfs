@@ -21,7 +21,7 @@ func CommandDeleteHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fullPath := filepath.Join(config.Directory, req.Path)
-	fullPath = "../" + fullPath
+	fullPath = ".\\" + fullPath
 	if _, err := os.Stat(fullPath); os.IsNotExist(err) {
 		http.Error(w, "File not found", http.StatusNotFound)
 		return

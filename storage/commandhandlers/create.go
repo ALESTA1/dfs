@@ -22,7 +22,7 @@ func CommandCreateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fullPath := filepath.Join(config.Directory, req.Path)
-	fullPath = "../" + fullPath
+	fullPath = ".\\" + fullPath
 	dir := filepath.Dir(fullPath)
 	err = os.MkdirAll(dir, os.ModePerm)
 	if err != nil {

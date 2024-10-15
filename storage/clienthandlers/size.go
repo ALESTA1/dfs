@@ -25,6 +25,7 @@ func ClientSizeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fullPath := filepath.Join(config.Directory, req.Path)
+	fullPath = ".\\" + fullPath
 
 	fileInfo, err := os.Stat(fullPath)
 	if os.IsNotExist(err) {

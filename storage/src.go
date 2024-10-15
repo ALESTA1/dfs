@@ -19,6 +19,12 @@ func startClientServer() {
 	http.HandleFunc("/storage_size", clienthandlers.ClientSizeHandler)
 	http.HandleFunc("/storage_read", clienthandlers.ClientReadHandler)
 	http.HandleFunc("/storge_write", clienthandlers.ClientWriteHandler)
+
+	fmt.Println("Starting storage client server at port " + config.CLIENT_PORT)
+	err := http.ListenAndServe(":"+config.CLIENT_PORT, nil)
+	if err != nil {
+		fmt.Println("Error starting server:", err)
+	}
 }
 func main() {
 

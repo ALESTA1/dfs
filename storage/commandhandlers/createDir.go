@@ -8,7 +8,7 @@ import (
 	"storage/config"
 )
 
-func CommandCreateHandler(w http.ResponseWriter, r *http.Request) {
+func CommandCreateDirHandler(w http.ResponseWriter, r *http.Request) {
 
 	type CreateRequest struct {
 		Path string `json:"path"`
@@ -30,14 +30,6 @@ func CommandCreateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Create the file
-	file, err := os.Create(fullPath)
-	if err != nil {
-		http.Error(w, "Failed to create file", http.StatusNotFound)
-		return
-	}
-	defer file.Close()
-
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("File created successfully"))
+	w.Write([]byte("Directory created successfully"))
 }

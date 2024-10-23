@@ -9,6 +9,7 @@ type Node struct {
 	Hosts    []string
 	Is_Dir   bool
 	RwMutex  sync.RWMutex
+	FairLock sync.Mutex
 }
 
 func NewNode(name string) *Node {
@@ -141,8 +142,11 @@ func Lock(node *Node, i int, path []string, exclusive bool) {
 		return
 	}
 	if exclusive {
+		node.FairLock.Lock()
 		node.RwMutex.Lock()
 	} else {
+		node.FairLock.Lock()
+		node.FairLock.Unlock()
 		node.RwMutex.RLock()
 	}
 	currentNode := path[i]
@@ -158,6 +162,7 @@ func Unlock(node *Node, i int, path []string, exclusive bool) {
 	}
 	if exclusive {
 		node.RwMutex.Unlock()
+		node.FairLock.Unlock()
 	} else {
 		node.RwMutex.RUnlock()
 	}

@@ -25,6 +25,7 @@ func NewNode(name string) *Node {
 func Insert(node *Node, i int, path []string, host string) bool {
 
 	if i == len(path) {
+		node.Hosts = append(node.Hosts, host)
 		node.Is_Dir = false
 		return true
 	}
@@ -89,7 +90,7 @@ func IsDir(node *Node, i int, path []string) int {
 func GetHost(node *Node, i int, path []string) string {
 
 	if i == len(path) {
-
+		println(len(node.Hosts))
 		host := node.Hosts[node.index]
 		node.index += 1
 		node.index %= len(node.Hosts)
@@ -146,6 +147,8 @@ func Lock(node *Node, i int, path []string, exclusive bool) {
 		node.RwMutex.Lock()
 	} else {
 		node.FairLock.Lock()
+		i++ //added this redundant code to remove the empty critical section warning
+		i--
 		node.FairLock.Unlock()
 		node.RwMutex.RLock()
 	}
@@ -177,7 +180,6 @@ func FindNode(node *Node, i int, path []string) *Node {
 		if node.Is_Dir {
 			return node
 		}
-
 		return nil
 	}
 	currentNode := path[i]
@@ -193,13 +195,15 @@ func FindNode(node *Node, i int, path []string) *Node {
 func List(node *Node, temp string, paths *[]string) {
 
 	if !node.Is_Dir {
-		*paths = append(*paths, temp)
+		final := temp
+		final = final[:len(final)-1]
+		*paths = append(*paths,final)
 		return
 	}
 
-	for key, val := range node.Children {
+	for key , val := range node.Children {
 		next := temp
-		next = next + "/" + key
+		next = next + key + "/"
 		List(val, next, paths)
 	}
 }

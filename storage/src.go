@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"storage/clienthandlers"
+	"storage/commandhandlers"
 	"storage/config"
 	"time"
 )
@@ -12,6 +13,18 @@ import (
 func startCommandServer() {
 
 	Register()
+	http.HandleFunc("/storage_create", commandhandlers.CommandCreateFileHandler)
+	http.HandleFunc("/storage_delete",commandhandlers.CommandDeleteHandler)
+	http.HandleFunc("/storage_copy", commandhandlers.CommandCopyHandler)
+	http.HandleFunc("/storage_create_dir", commandhandlers.CommandCreateDirHandler)
+
+	fmt.Println("Starting storage command server at port " + config.COMMAND_PORT)
+	println(config.IP+":"+config.COMMAND_PORT)
+	err := http.ListenAndServe(config.IP+":"+config.COMMAND_PORT, nil)
+	if err != nil {
+		fmt.Println("Error starting server:", err)
+	}
+
 
 }
 

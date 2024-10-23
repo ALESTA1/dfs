@@ -28,7 +28,7 @@ func List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	path := strings.Split(body.Path, "/")
+	path := strings.Split(strings.Trim(body.Path, "/"), "/")
 	node := directree.FindNode(config.Root, 0, path)
 
 	if node != nil {

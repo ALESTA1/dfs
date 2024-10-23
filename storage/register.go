@@ -123,15 +123,15 @@ func deleteFiles(directory string, files []string) {
 func Register() {
 
 	filePaths, _ := getFilePaths(config.Directory)
-	storageIP := resolveHostIp()
+	config.IP = resolveHostIp()
 	clientPort, _ := strconv.Atoi(config.CLIENT_PORT)
 	commandPort, _ := strconv.Atoi(config.COMMAND_PORT)
 
 	fmt.Println(filePaths)
-	fmt.Println(storageIP)
+	fmt.Println(config.IP)
 
 	body := RegisterBody{
-		StorageIP:   storageIP,
+		StorageIP:   config.IP,
 		ClientPort:  clientPort,
 		CommandPort: commandPort,
 		Files:       filePaths,

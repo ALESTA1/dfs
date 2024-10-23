@@ -25,6 +25,7 @@ func GetStorage(w http.ResponseWriter, r *http.Request) {
 	f := directree.IsDir(config.Root, 0, path)
 
 	if f == 1 {
+		
 		host := directree.GetHost(config.Root, 0, path)
 		type Response struct {
 			ServerIP   string `json:"server_ip"`

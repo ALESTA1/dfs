@@ -6,6 +6,7 @@ import (
 	"naming/registration"
 	"naming/service"
 	"os"
+	"time"
 )
 
 func main() {
@@ -20,4 +21,7 @@ func main() {
 	go service.ClientService()
 	go registration.RegistrationService()
 
+	for {
+		time.Sleep(1000000000 * time.Second)
+	}
 }

@@ -14,6 +14,7 @@ func startCommandServer() {
 	Register()
 
 }
+
 func startClientServer() {
 
 	http.HandleFunc("/storage_size", clienthandlers.ClientSizeHandler)
@@ -26,6 +27,7 @@ func startClientServer() {
 		fmt.Println("Error starting server:", err)
 	}
 }
+
 func main() {
 
 	if len(os.Args) < 4 {

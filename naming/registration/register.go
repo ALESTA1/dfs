@@ -85,16 +85,19 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	filesToDelete := []string{}
 
 	fmt.Println(b.Storage_ip)
+	
+	config.Root.RwMutex.Lock()
 	for _, file := range b.Files {
 
 		temp := strings.Split(file, "/")
-		fmt.Println(temp)
 		isInserted := directree.Insert(config.Root, 0, temp, b.Storage_ip)
 		fmt.Println(isInserted)
 		if !isInserted {
 			filesToDelete = append(filesToDelete, file)
 		}
 	}
+	config.Root.RwMutex.Unlock()
+
 	fmt.Println(filesToDelete)
 	response := struct {
 		Files []string `json:"files"`

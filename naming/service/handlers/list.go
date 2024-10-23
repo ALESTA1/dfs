@@ -29,12 +29,27 @@ func List(w http.ResponseWriter, r *http.Request) {
 	}
 
 	path := strings.Split(body.Path, "/")
-	f := directree.IsDir(config.Root, 0, path)
+	node := directree.FindNode(config.Root, 0, path)
 
-	if f == 0 {
+	if node != nil {
+		var files []string
+		directree.List(node, "/"+node.Name, &files)
 
+		response := map[string][]string{
+			"files": files,
+		}
+
+		jsonResponse, err := json.Marshal(response)
+		if err != nil {
+			http.Error(w, "Error creating JSON response", http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(jsonResponse)
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Invalid path"))
 	}
-
 }

@@ -8,7 +8,7 @@ type Node struct {
 	index    int
 	Hosts    []string
 	Is_Dir   bool
-	rwMutex  sync.RWMutex
+	RwMutex  sync.RWMutex
 }
 
 func NewNode(name string) *Node {
@@ -141,9 +141,9 @@ func Lock(node *Node, i int, path []string, exclusive bool) {
 		return
 	}
 	if exclusive {
-		node.rwMutex.Lock()
+		node.RwMutex.Lock()
 	} else {
-		node.rwMutex.RLock()
+		node.RwMutex.RLock()
 	}
 	currentNode := path[i]
 	nextNode := node.Children[currentNode]
@@ -157,12 +157,44 @@ func Unlock(node *Node, i int, path []string, exclusive bool) {
 		return
 	}
 	if exclusive {
-		node.rwMutex.Unlock()
+		node.RwMutex.Unlock()
 	} else {
-		node.rwMutex.RUnlock()
+		node.RwMutex.RUnlock()
 	}
 	currentNode := path[i]
 	nextNode := node.Children[currentNode]
 	Lock(nextNode, i+1, path, exclusive)
 
+}
+
+func FindNode(node *Node, i int, path []string) *Node {
+	if i == len(path) {
+		if node.Is_Dir {
+			return node
+		}
+
+		return nil
+	}
+	currentNode := path[i]
+	nextNode, exists := node.Children[currentNode]
+	if !exists {
+		return nil
+	} else {
+		return FindNode(nextNode, i+1, path)
+	}
+
+}
+
+func List(node *Node, temp string, paths *[]string) {
+
+	if !node.Is_Dir {
+		*paths = append(*paths, temp)
+		return
+	}
+
+	for key, val := range node.Children {
+		next := temp
+		next = next + "/" + key
+		List(val, next, paths)
+	}
 }

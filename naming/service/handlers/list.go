@@ -9,10 +9,10 @@ import (
 	"strings"
 )
 
-func Unlock(w http.ResponseWriter, r *http.Request) {
+func List(w http.ResponseWriter, r *http.Request) {
+
 	type Body struct {
-		Path      string `json:"path"`
-		Exclusive bool   `json:"exclusive"`
+		Path string `json:"path"`
 	}
 
 	b, err := io.ReadAll(r.Body)
@@ -29,13 +29,12 @@ func Unlock(w http.ResponseWriter, r *http.Request) {
 	}
 
 	path := strings.Split(body.Path, "/")
-	f := directree.IsValidPath(config.Root, 0, path)
+	f := directree.IsDir(config.Root, 0, path)
 
-	if f {
+	if f == 0 {
 
-		directree.Unlock(config.Root, 0, path, body.Exclusive)
-		w.WriteHeader(http.StatusOK)
 	} else {
-		w.WriteHeader(http.StatusNotFound)
+		w.WriteHeader(http.StatusBadRequest)
 	}
+
 }

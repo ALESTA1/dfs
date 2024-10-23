@@ -1,11 +1,14 @@
 package directree
 
+import "sync"
+
 type Node struct {
 	Name     string
 	Children map[string]*Node
 	index    int
 	Hosts    []string
 	Is_Dir   bool
+	rwMutex  sync.RWMutex
 }
 
 func NewNode(name string) *Node {
@@ -116,5 +119,50 @@ func CreateDir(node *Node, i int, path []string, host string) {
 		Insert(nextNode, i+1, path, host)
 	}
 	node.Hosts = append(node.Hosts, host)
+
+}
+
+func Delete(node *Node, i int, path []string) []string {
+
+	if i == len(path) {
+		return node.Hosts
+	}
+	currentNode := path[i]
+	nextNode := node.Children[currentNode]
+	if i == len(path)-1 {
+		delete(node.Children, currentNode)
+	}
+	return Delete(nextNode, i+1, path)
+}
+
+func Lock(node *Node, i int, path []string, exclusive bool) {
+
+	if i == len(path)-1 {
+		return
+	}
+	if exclusive {
+		node.rwMutex.Lock()
+	} else {
+		node.rwMutex.RLock()
+	}
+	currentNode := path[i]
+	nextNode := node.Children[currentNode]
+	Lock(nextNode, i+1, path, exclusive)
+
+}
+
+func Unlock(node *Node, i int, path []string, exclusive bool) {
+
+	if i == len(path)-1 {
+		return
+	}
+	if exclusive {
+		node.rwMutex.Unlock()
+	} else {
+		node.rwMutex.RUnlock()
+	}
+	currentNode := path[i]
+	nextNode := node.Children[currentNode]
+	Lock(nextNode, i+1, path, exclusive)
 
 }

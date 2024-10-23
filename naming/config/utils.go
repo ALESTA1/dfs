@@ -6,7 +6,7 @@ import (
 )
 
 func GetRandomKey(m map[string]int) string {
-	rand.Seed(time.Now().UnixNano()) // Seed the random number generator
+	rand.NewSource(time.Now().UnixNano())
 	keys := make([]string, 0, len(m))
 
 	

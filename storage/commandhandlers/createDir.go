@@ -23,8 +23,7 @@ func CommandCreateDirHandler(w http.ResponseWriter, r *http.Request) {
 
 	fullPath := filepath.Join(config.Directory, req.Path)
 	fullPath = ".\\" + fullPath
-	dir := filepath.Dir(fullPath)
-	err = os.MkdirAll(dir, os.ModePerm)
+	err = os.MkdirAll(fullPath, os.ModePerm)
 	if err != nil {
 		http.Error(w, "Failed to create directories", http.StatusInternalServerError)
 		return

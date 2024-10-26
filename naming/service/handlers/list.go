@@ -33,8 +33,14 @@ func List(w http.ResponseWriter, r *http.Request) {
 
 	if node != nil {
 		var files []string
-		directree.List(node, "/"+node.Name, &files)
 
+		tempPath := path
+		tempPath = append(tempPath, "/")
+		
+		directree.Lock(config.Root,0,tempPath,false)
+		directree.List(node, "/"+node.Name, &files)
+		directree.Unlock(config.Root,0,tempPath,false)
+		
 		response := map[string][]string{
 			"files": files,
 		}

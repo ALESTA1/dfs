@@ -33,9 +33,9 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 	f := directree.IsValidPath(config.Root, 0, path)
 
 	if f {
-
+		directree.Lock(config.Root,0,path,true)
 		hosts := directree.Delete(config.Root, 0, path)
-
+		directree.Unlock(config.Root,0,path,true)
 		for _, host := range hosts {
 
 			reqBody := struct {

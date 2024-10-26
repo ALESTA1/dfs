@@ -34,8 +34,10 @@ func CreateDir(w http.ResponseWriter, r *http.Request) {
 
 	if !f {
 		host := config.GetRandomKey(config.StorageCommandPorts)
+		directree.Lock(config.Root,0,path,true)
 		directree.CreateDir(config.Root, 0, path, host)
-
+		directree.Unlock(config.Root,0,path,true)
+		
 		reqBody := struct {
 			Path string `json:"path"`
 		}{Path: body.Path}

@@ -1,6 +1,6 @@
 # Distributed File System
 
-A robust distributed file system implementation inspired by a CMU course project. The system features a centralized Naming Server architecture with distributed Storage Servers, supporting file replication and lock-based consistency.
+A simple yet distributed file system implementation inspired by a CMU course project. The system features a centralized Naming Server architecture with distributed Storage Servers, supporting file replication and lock-based consistency.
 
 ## 🏗️ Architecture
 

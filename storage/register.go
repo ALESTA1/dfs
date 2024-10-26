@@ -127,9 +127,6 @@ func Register() {
 	clientPort, _ := strconv.Atoi(config.CLIENT_PORT)
 	commandPort, _ := strconv.Atoi(config.COMMAND_PORT)
 
-	fmt.Println(filePaths)
-	fmt.Println(config.IP)
-
 	body := RegisterBody{
 		StorageIP:   config.IP,
 		ClientPort:  clientPort,

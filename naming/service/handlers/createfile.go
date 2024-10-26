@@ -45,8 +45,8 @@ func CreateFile(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error creating JSON body", http.StatusInternalServerError)
 			return
 		}
-
-		resp, err := http.Post(host+":"+strconv.Itoa(config.StorageCommandPorts[host])+"/storage_create", "application/json", bytes.NewBuffer(jsonBody))
+		println("http://"+host+":"+strconv.Itoa(config.StorageCommandPorts[host])+"/storage_create")
+		resp, err := http.Post("http://"+host+":"+strconv.Itoa(config.StorageCommandPorts[host])+"/storage_create", "application/json", bytes.NewBuffer(jsonBody))
 		if err != nil {
 			http.Error(w, "Error sending POST request", http.StatusInternalServerError)
 			return

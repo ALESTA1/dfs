@@ -46,7 +46,7 @@ func CreateDir(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		resp, err := http.Post(host+":"+strconv.Itoa(config.StorageCommandPorts[host])+"/storage_create_dir", "application/json", bytes.NewBuffer(jsonBody))
+		resp, err := http.Post("http://"+host+":"+strconv.Itoa(config.StorageCommandPorts[host])+"/storage_create_dir", "application/json", bytes.NewBuffer(jsonBody))
 		if err != nil {
 			http.Error(w, "Error sending POST request", http.StatusInternalServerError)
 			return

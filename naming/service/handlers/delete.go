@@ -47,9 +47,7 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 				http.Error(w, "Error creating JSON body", http.StatusInternalServerError)
 				return
 			}
-			println(host)
-			println(config.StorageCommandPorts[host])
-			endpoint := host + ":" + strconv.Itoa(config.StorageCommandPorts[host]) + "/storage_delete"
+			endpoint := "http://"+host + ":" + strconv.Itoa(config.StorageCommandPorts[host]) + "/storage_delete"
 			println(endpoint)
 			resp, err := http.Post(endpoint, "application/json", bytes.NewBuffer(jsonBody))
 			if err != nil {

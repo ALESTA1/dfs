@@ -9,6 +9,7 @@ import (
 )
 
 func CommandDeleteHandler(w http.ResponseWriter, r *http.Request) {
+	println("Delete req recieved")
 	type DeleteRequest struct {
 		Path string `json:"path"`
 	}

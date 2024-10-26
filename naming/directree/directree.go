@@ -232,3 +232,18 @@ func CheckReplication(node *Node, i int, path []string) (bool, []string, *Node) 
 	return CheckReplication(nextNode, i+1, path)
 
 }
+
+func CheckDereplication(node *Node, i int, path []string) *Node {
+
+	if i == len(path) {
+
+		if node.Is_Dir {
+			return nil
+		}
+
+		return node
+	}
+	currentNode := path[i]
+	nextNode := node.Children[currentNode]
+	return CheckDereplication(nextNode, i+1, path)
+}

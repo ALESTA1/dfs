@@ -66,7 +66,7 @@ go run . <Client_Service_Port> <Command_Port> <Registration_Port> <Storage_Direc
 
 Example:
 ```bash
-go run . 9090 9091 8081 ./storage1
+go run . 9090 9091 8081 storage1
 ```
 
 ## 💡 Implementation Notes

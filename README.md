@@ -109,10 +109,6 @@ go run . 9090 9091 8081 ./storage1
 
 Feel free to submit issues and enhancement requests.
 
-## 📄 License
-
-[Add your license information here]
-
 ## 🙏 Acknowledgments
 
 This project is inspired by a CMU course project. For detailed project requirements, refer to the original course materials.

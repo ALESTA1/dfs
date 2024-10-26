@@ -3,13 +3,15 @@ package directree
 import "sync"
 
 type Node struct {
-	Name     string
-	Children map[string]*Node
-	index    int
-	Hosts    []string
-	Is_Dir   bool
-	RwMutex  sync.RWMutex
-	FairLock sync.Mutex
+	Name      string
+	Children  map[string]*Node
+	index     int
+	Hosts     []string
+	Is_Dir    bool
+	RwMutex   sync.RWMutex
+	FairLock  sync.Mutex
+	Counter   int
+	HostsLock sync.Mutex
 }
 
 func NewNode(name string) *Node {
@@ -19,6 +21,7 @@ func NewNode(name string) *Node {
 		Hosts:    []string{},
 		index:    0,
 		Is_Dir:   true,
+		Counter:  0,
 	}
 }
 
@@ -91,9 +94,11 @@ func GetHost(node *Node, i int, path []string) string {
 
 	if i == len(path) {
 		println(len(node.Hosts))
+		node.HostsLock.Lock()
 		host := node.Hosts[node.index]
 		node.index += 1
 		node.index %= len(node.Hosts)
+		node.HostsLock.Unlock()
 		return host
 	}
 
@@ -197,13 +202,33 @@ func List(node *Node, temp string, paths *[]string) {
 	if !node.Is_Dir {
 		final := temp
 		final = final[:len(final)-1]
-		*paths = append(*paths,final)
+		*paths = append(*paths, final)
 		return
 	}
 
-	for key , val := range node.Children {
+	for key, val := range node.Children {
 		next := temp
 		next = next + key + "/"
 		List(val, next, paths)
 	}
+}
+
+func CheckReplication(node *Node, i int, path []string) (bool, []string, *Node) {
+
+	if i == len(path) {
+
+		if node.Is_Dir {
+			return false, nil, nil
+		}
+		node.Counter += 1
+		node.Counter %= 20
+		if node.Counter == 0 {
+			return true, node.Hosts, node
+		}
+		return false, nil, nil
+	}
+	currentNode := path[i]
+	nextNode := node.Children[currentNode]
+	return CheckReplication(nextNode, i+1, path)
+
 }

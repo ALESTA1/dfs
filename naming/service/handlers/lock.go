@@ -5,9 +5,18 @@ import (
 	"io"
 	"naming/config"
 	"naming/directree"
+	"naming/replication"
 	"net/http"
 	"strings"
 )
+
+func arrayToMap(arr []string) map[string]bool {
+	result := make(map[string]bool)
+	for _, str := range arr {
+		result[str] = true
+	}
+	return result
+}
 
 func Lock(w http.ResponseWriter, r *http.Request) {
 	type Body struct {
@@ -34,6 +43,27 @@ func Lock(w http.ResponseWriter, r *http.Request) {
 	if f {
 
 		directree.Lock(config.Root, 0, path, body.Exclusive)
+		replicate, hosts, node := directree.CheckReplication(config.Root, 0, path)
+		if replicate {
+			hostsMap := arrayToMap(hosts)
+			host := "none"
+
+			for key := range config.StorageCommandPorts {
+
+				_, exists := hostsMap[key]
+				if !exists {
+					host = key
+					break
+				}
+			}
+
+			if host != "none" {
+
+				directree.Lock(config.Root, 0, path, false)
+				go replication.Replicate(host, hosts[0], node, path, body.Path)
+			}
+
+		}
 		w.WriteHeader(http.StatusOK)
 	} else {
 		w.WriteHeader(http.StatusNotFound)

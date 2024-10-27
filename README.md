@@ -61,12 +61,12 @@ go run . 8080 8081
 Navigate to the `storage` directory and run:
 
 ```bash
-go run . <Client_Service_Port> <Command_Port> <Registration_Port> <Storage_Directory>
+go run . <Client_Service_Port> <Command_Port> <Registration_Port> <Storage_Directory> <Naming server ip>
 ```
 
 Example:
 ```bash
-go run . 9090 9091 8081 storage1
+go run . 9090 9091 8081 storage1 localhost
 ```
 
 ## 💡 Implementation Notes

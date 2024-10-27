@@ -19,6 +19,9 @@ func arrayToMap(arr []string) map[string]bool {
 }
 
 func Lock(w http.ResponseWriter, r *http.Request) {
+
+	config.GlobalMutex.Lock()
+	defer config.GlobalMutex.Unlock()
 	type Body struct {
 		Path      string `json:"path"`
 		Exclusive bool   `json:"exclusive"`
@@ -78,4 +81,5 @@ func Lock(w http.ResponseWriter, r *http.Request) {
 	} else {
 		w.WriteHeader(http.StatusNotFound)
 	}
+
 }

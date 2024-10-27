@@ -12,6 +12,8 @@ import (
 )
 
 func CreateFile(w http.ResponseWriter, r *http.Request) {
+	config.GlobalMutex.Lock()
+	defer config.GlobalMutex.Unlock()
 	type Body struct {
 		Path string `json:"path"`
 	}
@@ -35,10 +37,10 @@ func CreateFile(w http.ResponseWriter, r *http.Request) {
 	if !f {
 		host := config.GetRandomKey(config.StorageCommandPorts)
 
-		directree.Lock(config.Root,0,path,true)
+		directree.Lock(config.Root, 0, path, true)
 		directree.Insert(config.Root, 0, path, host)
-		directree.Unlock(config.Root,0,path,true)
-		
+		directree.Unlock(config.Root, 0, path, true)
+
 		reqBody := struct {
 			Path string `json:"path"`
 		}{Path: body.Path}
@@ -48,7 +50,7 @@ func CreateFile(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error creating JSON body", http.StatusInternalServerError)
 			return
 		}
-		println("http://"+host+":"+strconv.Itoa(config.StorageCommandPorts[host])+"/storage_create")
+		println("http://" + host + ":" + strconv.Itoa(config.StorageCommandPorts[host]) + "/storage_create")
 		resp, err := http.Post("http://"+host+":"+strconv.Itoa(config.StorageCommandPorts[host])+"/storage_create", "application/json", bytes.NewBuffer(jsonBody))
 		if err != nil {
 			http.Error(w, "Error sending POST request", http.StatusInternalServerError)
@@ -79,4 +81,5 @@ func CreateFile(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write(jsonResponse)
 	}
+	
 }

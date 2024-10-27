@@ -10,6 +10,8 @@ import (
 )
 
 func Unlock(w http.ResponseWriter, r *http.Request) {
+	config.GlobalMutex.Lock()
+	defer config.GlobalMutex.Unlock()
 	type Body struct {
 		Path      string `json:"path"`
 		Exclusive bool   `json:"exclusive"`
@@ -38,4 +40,5 @@ func Unlock(w http.ResponseWriter, r *http.Request) {
 	} else {
 		w.WriteHeader(http.StatusNotFound)
 	}
+	
 }

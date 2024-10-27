@@ -12,6 +12,8 @@ import (
 )
 
 func CreateDir(w http.ResponseWriter, r *http.Request) {
+	config.GlobalMutex.Lock()
+	defer config.GlobalMutex.Unlock()
 	type Body struct {
 		Path string `json:"path"`
 	}
@@ -34,10 +36,10 @@ func CreateDir(w http.ResponseWriter, r *http.Request) {
 
 	if !f {
 		host := config.GetRandomKey(config.StorageCommandPorts)
-		directree.Lock(config.Root,0,path,true)
+		directree.Lock(config.Root, 0, path, true)
 		directree.CreateDir(config.Root, 0, path, host)
-		directree.Unlock(config.Root,0,path,true)
-		
+		directree.Unlock(config.Root, 0, path, true)
+
 		reqBody := struct {
 			Path string `json:"path"`
 		}{Path: body.Path}
@@ -55,7 +57,6 @@ func CreateDir(w http.ResponseWriter, r *http.Request) {
 		}
 		defer resp.Body.Close()
 
-		
 		if resp.StatusCode != http.StatusOK {
 			http.Error(w, "Error from command server", resp.StatusCode)
 			return
@@ -79,4 +80,5 @@ func CreateDir(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write(jsonResponse)
 	}
+
 }

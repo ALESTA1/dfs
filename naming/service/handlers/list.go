@@ -11,6 +11,8 @@ import (
 
 func List(w http.ResponseWriter, r *http.Request) {
 
+	config.GlobalMutex.Lock()
+	defer config.GlobalMutex.Unlock()
 	type Body struct {
 		Path string `json:"path"`
 	}
@@ -36,11 +38,11 @@ func List(w http.ResponseWriter, r *http.Request) {
 
 		tempPath := path
 		tempPath = append(tempPath, "/")
-		
-		directree.Lock(config.Root,0,tempPath,false)
+
+		directree.Lock(config.Root, 0, tempPath, false)
 		directree.List(node, "/"+node.Name, &files)
-		directree.Unlock(config.Root,0,tempPath,false)
-		
+		directree.Unlock(config.Root, 0, tempPath, false)
+
 		response := map[string][]string{
 			"files": files,
 		}
@@ -58,4 +60,6 @@ func List(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("Invalid path"))
 	}
+
+
 }

@@ -20,7 +20,7 @@ func ClientService() {
 	http.HandleFunc("/list", handlers.List)
 
 	fmt.Println("Starting client server on " + config.SERVICE_PORT)
-	err := http.ListenAndServe(":"+config.SERVICE_PORT, nil)
+	err := http.ListenAndServe(config.IP+":"+config.SERVICE_PORT, nil)
 	if err != nil {
 		fmt.Println("Error starting server:", err)
 	}

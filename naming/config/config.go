@@ -11,3 +11,4 @@ var StorageCommandPorts = make(map[string]int)
 var GlobalMutex sync.Mutex
 var REGISTRATION_PORT string
 var SERVICE_PORT string
+var IP string

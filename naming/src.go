@@ -15,6 +15,8 @@ func main() {
 		fmt.Println("Please provide at least 2 ports.")
 		return
 	}
+	config.IP = config.ResolveHostIp()
+	println("Naming server running on IP .. " + config.IP)
 	config.SERVICE_PORT = os.Args[1]
 	config.REGISTRATION_PORT = os.Args[2]
 

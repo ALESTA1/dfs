@@ -140,7 +140,7 @@ func Register() {
 		return
 	}
 
-	resp, err := http.Post("http://localhost:"+config.REGISTRATION_PORT+"/register", "application/json", bytes.NewBuffer(jsonData))
+	resp, err := http.Post("http://"+config.Naming_IP+":"+config.REGISTRATION_PORT+"/register", "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
 		fmt.Println("Error sending POST request:", err)
 		return

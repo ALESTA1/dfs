@@ -43,7 +43,7 @@ func startClientServer() {
 
 func main() {
 
-	if len(os.Args) < 4 {
+	if len(os.Args) < 5 {
 		fmt.Println("Please provide at least 2 ports.")
 		return
 	}
@@ -52,6 +52,7 @@ func main() {
 	config.COMMAND_PORT = os.Args[2]
 	config.REGISTRATION_PORT = os.Args[3]
 	config.Directory = os.Args[4]
+	config.Naming_IP = os.Args[5]
 	os.MkdirAll(config.Directory, os.ModePerm)
 
 	go startCommandServer()

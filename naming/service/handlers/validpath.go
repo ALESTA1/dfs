@@ -10,8 +10,7 @@ import (
 )
 
 func ValidPath(w http.ResponseWriter, r *http.Request) {
-	config.GlobalMutex.Lock()
-	defer config.GlobalMutex.Unlock()
+	
 	type Body struct {
 		Path string `json:"path"`
 	}
